@@ -1,0 +1,67 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package proyecto1;
+
+/**
+ *
+ * @author CarlosOG
+ */
+public class Revisor {
+    private String expres;
+
+    public Revisor(String expres) {
+        this.expres = expres;
+    }
+
+    public Revisor() {
+    }
+    
+    public boolean estanBalanceados(){
+       int n = expres.length();
+       boolean resp = false;
+       if (n>0){
+           PilaA <Character> p = new PilaA(n);
+           int i =0;
+           char car;
+           while (i<n){
+               car = expres.charAt(i);
+               if (car == '(')
+                   p.push(car);
+               else
+                   if (car == ')')
+                       try{
+                           p.pop();      
+                       }
+                       catch( EmptyCollectionException e){
+                           i=n *2;
+                       }
+               i++;
+           }
+           resp =  i == n && p.isEmpty();
+       }
+       return resp;
+    }
+    
+    public boolean repeticionOpe (){
+        boolean resp = true;
+        char car;
+        boolean operadorPrec = false;
+        for (int i = 0; i<expres.length();i++){
+            car = expres.charAt(i);
+            if (car == '+' || car == '-' || car == '/' || car == '*' || car =='.'){
+                if (operadorPrec)
+                    resp = false;
+                operadorPrec = true;
+            }
+            else{
+                operadorPrec = false;
+            }
+        }
+        return resp;
+    }
+    
+    
+}
