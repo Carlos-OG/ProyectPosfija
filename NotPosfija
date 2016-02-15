@@ -1,1 +1,118 @@
-// prrr
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package proyecto1;
+
+/**
+ *
+ * @author CarlosOG
+ */
+public class NotPosfija {
+    // ejemplo : de inf a+b a pos ab+
+    // a+b*c -> ab+c*
+    // (a+b)*c -> ab+c*
+    // a*b+c*d+e*f -> ab*cd*ef*++
+    /* 
+mientras cada elemento tenga "algo"
+    1) tomar 1 elemento ("ele")
+    2) si "ele" es un dato entonces guardarlo en cadena posfija
+        a)si "ele" es 1 "(" guardarlo en la pila -> 2)
+        b) si " ele" es ")" entonces while (!pila.isEmpty && pila.peek != ")"
+            Sacar 1 elemento de la pila 
+            guardarlo en cadena posjija
+        Sacar 1 elemento de la pila ")"
+        c) si "ele" es un operador (+,-,*,/)
+            while (!pila.isEmpty && prioridad("ele",pilaAux.peek) (menor o igual)
+n
+                Sacar elemento de la pila 
+                Guaradarlo en la cadena posfija
+              Guardar operador en la pila
+
+     while ( !pila.isEmpty)
+        pop
+        guardarlo en la posfijo
+*/
+    private String expresion;
+
+    public NotPosfija(String expresion) {
+        this.expresion = expresion;
+    }
+
+    public NotPosfija() {
+    }
+    
+    public boolean esDato (char car){
+        boolean resp = false;
+        if (car=='1' || car=='2' || car=='3' || car=='4' || car=='5' || 
+                car=='6' || car=='7' || car=='8' || car=='9' || car=='0')
+            resp = true;
+        return resp;
+    }
+    public boolean esOperador (char car){
+        boolean resp = false;
+        if (car == '+' || car == '-' || car == '/' || car == '*' || car =='.'){
+            resp = true;
+        }
+        return resp;
+    }
+    
+    public boolean prioridad (char car, char prec){
+        boolean resp = true;
+        if ( (car == '*' || car == '/') && (prec=='*' || prec=='/')){
+            resp = false;
+        }
+        return resp;
+    }
+    
+    public String convertidorPosfija (){
+        StringBuilder str = new StringBuilder();
+        Revisor revisor = new Revisor (expresion);
+        if ( revisor.estanBalanceados() || revisor.repeticionOpe()){
+            char car, prec = '@';
+            PilaA posfija = new PilaA();
+            PilaA operadores = new PilaA();
+            PilaA aux = new PilaA();
+            for (int i = 0; i<expresion.length(); i++){
+                car = expresion.charAt(i);
+                if (esDato(car))
+                    posfija.push(car);
+                if (car == '(')
+                    operadores.push(car);
+                if (car == ')'){
+                    while (!operadores.isEmpty() && operadores.peak() !=")"){
+                        posfija.push(operadores.pop());  
+                    }
+                    operadores.pop();
+                }
+                if (esOperador(car)){
+                    if (prec == '@'){
+                        operadores.push(car);
+                        prec = car;
+                    }
+                    else{
+                        if (!prioridad(car,prec)){
+                            posfija.push(operadores.pop());
+                            operadores.push(car);
+                        }
+                        else
+                            operadores.push(car);
+                    }
+                }
+            }
+            
+            while (! operadores.isEmpty())
+                posfija.push(operadores.pop());
+            while (!posfija.isEmpty())
+                aux.push(posfija.pop());
+            while (! aux.isEmpty())
+                str.append(aux.pop());
+        }
+        else {
+            str.append("Error");
+        }
+        return str.toString();
+    }
+}
+
